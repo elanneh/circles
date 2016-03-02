@@ -1,0 +1,79 @@
+<html>
+<head>
+	<title>Circles - Javascript OOP demo</title>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+</head>
+<body>
+	<svg id="svg" xmlns="http://www.w3.org/2000/svg" height="100%" width="100%"></svg>
+	<script>
+
+	var counter = 1; 
+	var circles = {}; 
+	
+	function makeSVG(tag, attrs) {
+        var el= document.createElementNS('http://www.w3.org/2000/svg', tag);
+        for (var k in attrs)
+        {
+            el.setAttribute(k, attrs[k]);
+        }
+        return el;
+    }
+
+    function createCircle(cx, cy, r){
+    	var circle = makeSVG('circle', 
+				{ 	cx: cx,
+				  	cy: cy,
+				  	r:  r,
+				  	id: 'circle_'+counter,
+				  	style: "fill: white"
+				});
+    	circles['circle_'+counter] = {radius: r};
+    	counter++;
+
+			document.getElementById('svg').appendChild(circle);
+		
+    }
+
+
+    function updateCircles(){
+    	for(circle in circles){
+    		var el = document.getElementById(circle);
+    		var random = Math.floor(Math.random()*255);
+    		var random2 = Math.floor(Math.random()*255);
+    		var random3 = Math.floor(Math.random()*255);
+    		var color = random-parseInt(circles[circle].radius/80*255);
+    		var color2 = random2-parseInt(circles[circle].radius/80*255);
+    		var color3 = random3-parseInt(circles[circle].radius/80*255);
+
+    		circles[circle].radius = circles[circle].radius+1;
+
+    		el.setAttribute("r", circles[circle].radius);
+    		el.setAttribute("style", "fill: rgb("+color+","+color2+","+color3+"); ");
+
+    		if(circles[circle].radius > 80){
+    			document.getElementById('svg').removeChild(el);
+    			delete circles[circle];
+    		}
+    	}
+    }
+
+    function mainLoop(){
+    	createCircle(Math.random()*document.body.clientWidth, Math.random()*document.body.clientHeight, 15);
+
+    	updateCircles();
+    }
+
+
+
+    setInterval(mainLoop, 40);
+    document.onclick = function(e){
+    	createCircle(e.clientX, e.clientY, 15);
+    }
+
+    document.onmousemove = function(e){
+    	createCircle(e.clientX, e.clientY, 15);
+    }
+
+	</script>
+</body>
+</html>
